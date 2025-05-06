@@ -6,28 +6,29 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "Bans")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class Ban {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "issuer_id", nullable = false)
+    private User issuer;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private User receiver;
 
     @Column(nullable = false)
-    private String password;
+    private LocalDate since;
 
     @Column(nullable = false)
-    private LocalDate createdAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    private LocalDate until;
 }

@@ -3,31 +3,28 @@ package smart.bet.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
-@Table(name = "Users")
+@Table(name = "Bet_Selections")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class BetSelection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private LocalDate createdAt;
+    private long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private SelectionType selection;
+
+    @ManyToOne
+    @JoinColumn(name = "odd_id", nullable = false)
+    private Odd odd;
+
+    @ManyToOne
+    @JoinColumn(name = "builder_id", nullable = false)
+    private BetBuilder builder;
 }
