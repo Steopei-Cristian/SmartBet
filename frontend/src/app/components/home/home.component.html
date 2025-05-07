@@ -1,0 +1,7 @@
+<div class="home-container">
+  <h2>Welcome to SmartBet</h2>
+  <div class="user-role" *ngIf="authService.getCurrentUser()">
+    <p>You are logged in as: {{ authService.getCurrentUser()?.username }}</p>
+    <p>Your role is: {{ authService.getCurrentUser()?.role }}</p>
+  </div>
+</div> 

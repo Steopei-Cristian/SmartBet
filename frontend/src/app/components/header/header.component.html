@@ -1,0 +1,9 @@
+<header class="header">
+  <div class="header-content">
+    <h1>SmartBet</h1>
+    <div class="user-info" *ngIf="authService.getCurrentUser()">
+      <span>Welcome, {{ authService.getCurrentUser()?.username }}</span>
+      <button (click)="onLogout()" class="logout-btn">Logout</button>
+    </div>
+  </div>
+</header> 
