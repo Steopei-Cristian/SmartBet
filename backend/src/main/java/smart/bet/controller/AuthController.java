@@ -23,6 +23,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,9 +33,9 @@ public class AuthController {
     private final CustomUserDetailsService userDetailsService;
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            Map<String, Object> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>();
             response.put("error", "Username already exists");
             return ResponseEntity.badRequest().body(response);
         }
@@ -47,16 +48,18 @@ public class AuthController {
 
         userRepository.save(user);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "User registered successfully");
-        response.put("username", user.getUsername());
-        response.put("role", user.getRole());
+        // Generate token for the new user
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        String token = jwtService.generateToken(userDetails);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
         
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
@@ -67,14 +70,11 @@ public class AuthController {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        // Convert User to UserDetails
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-        var token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetails);
 
-        Map<String, Object> response = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         response.put("token", token);
-        response.put("username", user.getUsername());
-        response.put("role", user.getRole());
         
         return ResponseEntity.ok(response);
     }
