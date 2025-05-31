@@ -1,20 +1,42 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { LayoutComponent } from './components/layout/layout.component';
-import { HomeComponent } from './components/home/home.component';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
   {
     path: '',
-    component: LayoutComponent,
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent)
+  },
+  {
+    path: '',
+    loadComponent: () => import('./components/layout/layout.component').then(m => m.LayoutComponent),
     canActivate: [AuthGuard],
     children: [
-      { path: 'home', component: HomeComponent },
-      { path: '', redirectTo: '/home', pathMatch: 'full' }
+      {
+        path: 'home',
+        loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
+      },
+      {
+        path: 'matches',
+        loadComponent: () => import('./components/matches/matches.component').then(m => m.MatchesComponent),
+        canActivate: [roleGuard],
+        data: { role: 'BETTER' }
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent),
+        canActivate: [roleGuard],
+        data: { role: 'ADMIN' }
+      }
     ]
   }
 ];

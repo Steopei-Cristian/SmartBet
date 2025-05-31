@@ -1,0 +1,14 @@
+<div class="users-container">
+  <h2>Non-Admin Users</h2>
+  <div class="users-grid">
+    <div class="user-card" *ngFor="let user of users">
+      <div class="user-info">
+        <h3>{{ user.username }}</h3>
+        <p class="role">Role: {{ user.role }}</p>
+        <p class="created-at">Created: {{ user.createdAt | date }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <div class="loading" *ngIf="loading">Loading users...</div>
+</div> 

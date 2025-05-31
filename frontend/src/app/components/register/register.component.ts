@@ -30,7 +30,12 @@ export class RegisterComponent {
 
     this.authService.register(this.username, this.password).subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        const user = this.authService.getCurrentUser();
+        if (user?.role === 'BETTER') {
+          this.router.navigate(['/matches']);
+        } else {
+          this.router.navigate(['/users']);
+        }
       },
       error: (err) => {
         this.error = err.error.message || 'An error occurred during registration';

@@ -15,6 +15,7 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
   error: string = '';
+  loading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -22,12 +23,22 @@ export class LoginComponent {
   ) {}
 
   onSubmit() {
+    this.loading = true;
+    this.error = '';
+
     this.authService.login(this.username, this.password).subscribe({
-      next: () => {
-        this.router.navigate(['/']);
+      next: (response) => {
+        this.loading = false;
+        const user = this.authService.getCurrentUser();
+        if (user?.role === 'BETTER') {
+          this.router.navigate(['/matches']);
+        } else {
+          this.router.navigate(['/users']);
+        }
       },
-      error: (err) => {
-        this.error = err.error.message || 'An error occurred during login';
+      error: (error) => {
+        this.loading = false;
+        this.error = error.error?.message || 'Login failed. Please try again.';
       }
     });
   }
