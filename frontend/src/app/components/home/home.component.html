@@ -11,5 +11,22 @@
         View All Users
       </button>
     </div>
+
+    <div *ngIf="authService.getCurrentUser()?.role === 'BETTER'" class="better-actions">
+      <div class="balance-section">
+        <h3>Your Balance</h3>
+        <p class="balance" *ngIf="!loading">{{ balance | currency:'EUR' }}</p>
+        <p class="loading" *ngIf="loading">Loading balance...</p>
+        <p class="error" *ngIf="error">{{ error }}</p>
+      </div>
+      <div class="payment-buttons">
+        <button routerLink="/deposit" class="deposit-btn">
+          Deposit Money
+        </button>
+        <button routerLink="/withdraw" class="withdraw-btn">
+          Withdraw Money
+        </button>
+      </div>
+    </div>
   </div>
 </div> 

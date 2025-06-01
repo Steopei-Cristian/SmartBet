@@ -17,4 +17,10 @@ export class UserService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<User[]>(`${this.apiUrl}/non-admin`, { headers });
   }
+
+  getUserBalance(username: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${this.apiUrl}/balance`, { username }, { headers });
+  }
 } 

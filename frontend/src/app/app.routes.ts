@@ -42,6 +42,18 @@ export const routes: Routes = [
         loadComponent: () => import('./components/add-match/add-match.component').then(m => m.AddMatchComponent),
         canActivate: [roleGuard],
         data: { role: 'ADMIN' }
+      },
+      {
+        path: 'deposit',
+        loadComponent: () => import('./components/deposit/deposit.component').then(m => m.DepositComponent),
+        canActivate: [roleGuard],
+        data: { role: 'BETTER' }
+      },
+      {
+        path: 'retrieval',
+        loadComponent: () => import('./components/retrieval/retrieval.component').then(m => m.RetrievalComponent),
+        canActivate: [roleGuard],
+        data: { role: 'BETTER' }
       }
     ]
   }

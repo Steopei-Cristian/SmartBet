@@ -2,6 +2,16 @@
   <div class="header-content">
     <h1>SmartBet</h1>
     <div class="user-info" *ngIf="authService.getCurrentUser()">
+      <div class="better-info" *ngIf="authService.getCurrentUser()?.role === 'BETTER'">
+        <div class="balance" *ngIf="!loading">
+          Balance: {{ (balanceService.balance$ | async) | currency:'EUR' }}
+        </div>
+        <div class="loading" *ngIf="loading">Loading balance...</div>
+        <div class="payment-buttons">
+          <button routerLink="/deposit" class="deposit-btn">Deposit</button>
+          <button routerLink="/retrieval" class="retrieval-btn">Retrieve</button>
+        </div>
+      </div>
       <span>Welcome, {{ authService.getCurrentUser()?.username }}</span>
       <button (click)="onLogout()" class="logout-btn">Logout</button>
     </div>
