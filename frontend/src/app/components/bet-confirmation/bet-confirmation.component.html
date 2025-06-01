@@ -2,48 +2,57 @@
   <h2>Confirm Your Bet</h2>
   
   <div class="selections">
-    <div class="selection" *ngFor="let selection of selections$ | async; let i = index">
-      <button class="remove-btn" (click)="removeSelection(i)">×</button>
-      <div class="selection-details">
+    <h3>Selected Matches</h3>
+    <div class="selection-list">
+      <div *ngFor="let selection of selections$ | async; let i = index" class="selection-item">
         <span class="match-name">{{ selection.matchName }}</span>
-        <span class="odd-type">{{ selection.oddType | titlecase }}</span>
+        <span class="odd-type">{{ selection.oddType }}</span>
         <span class="odd-value">{{ selection.oddValue | number:'1.2-2' }}</span>
+        <button class="remove-btn" (click)="removeSelection(i)">×</button>
       </div>
     </div>
   </div>
 
-  <div class="bet-details">
-    <div class="total-odd">
-      <span>Total Odd:</span>
-      <span class="value">{{ totalOdd$ | async | number:'1.2-2' }}</span>
-    </div>
-
+  <div class="stake-section">
+    <h3>Stake(€)</h3>
     <div class="stake-input">
-      <label for="stake">Stake (€):</label>
       <input 
         type="number" 
-        id="stake" 
         [(ngModel)]="stake" 
-        min="1" 
-        step="1"
         placeholder="Enter stake"
+        [disabled]="isPlacingBet"
       >
+      <span class="error-message" *ngIf="errorMessage">{{ errorMessage }}</span>
     </div>
+  </div>
 
-    <div class="potential-winnings" *ngIf="stake">
-      <span>Potential Winnings:</span>
-      <span class="value">{{ (totalOdd$ | async)! * stake | number:'1.2-2' }}</span>
+  <div class="total-section">
+    <div class="total-odd">
+      <span>Total Odd:</span>
+      <span class="odd-value">{{ totalOdd$ | async | number:'1.2-2' }}</span>
+    </div>
+    <div class="potential-win">
+      <span>Potential Win:</span>
+      <span class="win-value">{{ (totalOdd$ | async)! * stake | number:'1.2-2' }}</span>
     </div>
   </div>
 
   <div class="actions">
-    <button class="cancel-btn" (click)="goBack()">Cancel</button>
+    <button class="back-btn" (click)="goBack()" [disabled]="isPlacingBet">Back</button>
     <button 
       class="place-bet-btn" 
-      [disabled]="!stake || stake < 1"
-      (click)="placeBet()"
+      (click)="placeBet()" 
+      [disabled]="isPlacingBet || stake <= 0"
     >
-      Place Bet
+      {{ isPlacingBet ? 'Placing Bet...' : 'Place Bet' }}
     </button>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="showSuccess$ | async"></div>
+<div class="success-popup" *ngIf="showSuccess$ | async">
+  <div class="success-content">
+    <i class="check-icon">✓</i>
+    <span class="success-message">Bet placed successfully!</span>
   </div>
 </div> 

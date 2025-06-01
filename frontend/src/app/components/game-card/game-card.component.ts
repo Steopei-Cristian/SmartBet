@@ -12,15 +12,15 @@ import { Match } from '../../models/match.model';
 })
 export class GameCardComponent {
   @Input() match!: Match;
-  private selectedOdd: 'home' | 'draw' | 'away' | null = null;
+  private selectedOdd: 'home' | 'level' | 'away' | null = null;
 
   constructor(private betBuilderService: BetBuilderService) {}
 
-  isSelected(type: 'home' | 'draw' | 'away'): boolean {
+  isSelected(type: 'home' | 'level' | 'away'): boolean {
     return this.selectedOdd === type;
   }
 
-  selectOdd(type: 'home' | 'draw' | 'away', value: number) {
+  selectOdd(type: 'home' | 'level' | 'away', value: number) {
     if (this.selectedOdd === type) {
       this.selectedOdd = null;
       this.betBuilderService.removeSelectionByMatchId(this.match.matchId);

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface BetSelection {
   matchId: number;
@@ -8,14 +10,26 @@ export interface BetSelection {
   oddValue: number;
 }
 
+export interface BetPlacementDTO {
+  matchId: number;
+  oddType: string;
+}
+
+export interface BetResponse {
+  betId: number;
+  balance: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class BetBuilderService {
   private selections = new BehaviorSubject<BetSelection[]>([]);
   private isVisible = new BehaviorSubject<boolean>(false);
+  private showSuccess = new BehaviorSubject<boolean>(false);
+  private apiUrl = environment.apiUrl;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getSelections(): Observable<BetSelection[]> {
     return this.selections.asObservable();
@@ -23,6 +37,10 @@ export class BetBuilderService {
 
   getVisibility(): Observable<boolean> {
     return this.isVisible.asObservable();
+  }
+
+  getShowSuccess(): Observable<boolean> {
+    return this.showSuccess.asObservable();
   }
 
   addSelection(selection: BetSelection) {
@@ -66,5 +84,29 @@ export class BetBuilderService {
 
   hide() {
     this.isVisible.next(false);
+  }
+
+  show() {
+    this.isVisible.next(true);
+  }
+
+  setShowSuccess(value: boolean) {
+    this.showSuccess.next(value);
+  }
+
+  placeBet(stake: number): Observable<BetResponse> {
+    const selections = this.selections.value;
+    const betPlacementDTOs: BetPlacementDTO[] = selections.map(selection => ({
+      matchId: selection.matchId,
+      oddType: selection.oddType
+    }));
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post<BetResponse>(`${this.apiUrl}/bets/place`, {
+      stake,
+      selections: betPlacementDTOs
+    }, { headers });
   }
 } 

@@ -1,13 +1,14 @@
 <div class="game-card">
   <div class="game-header">
-    <span class="league">{{ match.competition }}</span>
+    <span class="competition">{{ match.competition }}</span>
   </div>
   
   <div class="teams">
-    <div class="team home">
+    <div class="team">
       <span class="team-name">{{ match.team1 }}</span>
     </div>
-    <div class="team away">
+    <div class="vs">VS</div>
+    <div class="team">
       <span class="team-name">{{ match.team2 }}</span>
     </div>
   </div>
@@ -20,9 +21,9 @@
       {{ match.homeOdd | number:'1.2-2' }}
     </button>
     <button 
-      class="odd-btn draw" 
-      [class.selected]="isSelected('draw')"
-      (click)="selectOdd('draw', match.levelOdd)">
+      class="odd-btn level" 
+      [class.selected]="isSelected('level')"
+      (click)="selectOdd('level', match.levelOdd)">
       {{ match.levelOdd | number:'1.2-2' }}
     </button>
     <button 
