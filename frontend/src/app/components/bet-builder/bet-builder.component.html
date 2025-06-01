@@ -1,4 +1,4 @@
-<div class="bet-builder" *ngIf="isVisible$ | async">
+<div class="bet-builder" *ngIf="isVisible$ | async" [@slideInOut]>
   <div class="bet-builder-header">
     <h3>Bet Builder</h3>
     <button class="clear-btn" (click)="clearSelections()">Clear All</button>
