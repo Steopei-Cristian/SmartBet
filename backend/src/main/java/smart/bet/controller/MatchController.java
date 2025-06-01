@@ -2,10 +2,11 @@ package smart.bet.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import smart.bet.dto.AddMatchRequest;
 import smart.bet.dto.MatchOddResponse;
+import smart.bet.model.Match;
 import smart.bet.service.MatchService;
 
 import java.util.List;
@@ -19,5 +20,17 @@ public class MatchController {
     @GetMapping("/today")
     public ResponseEntity<List<MatchOddResponse>> getTodayMatches() {
         return ResponseEntity.ok(matchService.getTodayMatchesWithOdds());
+    }
+
+    @GetMapping("/competitions")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<String>> getAllCompetitions() {
+        return ResponseEntity.ok(matchService.getAllCompetitions());
+    }
+
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Match> addMatch(@RequestBody AddMatchRequest request) {
+        return ResponseEntity.ok(matchService.addMatchWithOdds(request));
     }
 } 

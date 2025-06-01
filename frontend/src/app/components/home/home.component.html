@@ -3,5 +3,13 @@
   <div class="user-role" *ngIf="authService.getCurrentUser()">
     <p>You are logged in as: {{ authService.getCurrentUser()?.username }}</p>
     <p>Your role is: {{ authService.getCurrentUser()?.role }}</p>
+    <div *ngIf="authService.getCurrentUser()?.role === 'ADMIN'" class="admin-actions">
+      <button routerLink="/add-match" class="add-match-btn">
+        Add Match
+      </button>
+      <button routerLink="/users" class="view-users-btn">
+        View All Users
+      </button>
+    </div>
   </div>
 </div> 
