@@ -21,7 +21,55 @@ h1 {
 .user-info {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
+}
+
+.better-info {
+  display: flex;
+  align-items: center;
   gap: 1rem;
+}
+
+.balance {
+  font-weight: 500;
+  color: #2ecc71;
+}
+
+.loading {
+  color: #95a5a6;
+}
+
+.payment-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deposit-btn,
+.retrieval-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.deposit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.deposit-btn:hover {
+  background-color: #2980b9;
+}
+
+.retrieval-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.retrieval-btn:hover {
+  background-color: #c0392b;
 }
 
 .logout-btn {

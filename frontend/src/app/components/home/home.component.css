@@ -29,8 +29,39 @@ p {
   margin-top: 1.5rem;
 }
 
+.better-actions {
+  margin-top: 1.5rem;
+}
+
+.balance-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.balance-section h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.balance {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #27ae60;
+}
+
+.payment-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
 .add-match-btn,
-.view-users-btn {
+.view-users-btn,
+.deposit-btn,
+.withdraw-btn {
   padding: 0.75rem 1.5rem;
   background-color: #3498db;
   color: white;
@@ -44,6 +75,24 @@ p {
 }
 
 .add-match-btn:hover,
-.view-users-btn:hover {
+.view-users-btn:hover,
+.deposit-btn:hover,
+.withdraw-btn:hover {
   background-color: #2980b9;
+}
+
+.withdraw-btn {
+  background-color: #e74c3c;
+}
+
+.withdraw-btn:hover {
+  background-color: #c0392b;
+}
+
+.loading {
+  color: #7f8c8d;
+}
+
+.error {
+  color: #e74c3c;
 } 
