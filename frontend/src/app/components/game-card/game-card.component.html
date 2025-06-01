@@ -1,0 +1,36 @@
+<div class="game-card">
+  <div class="game-header">
+    <span class="competition">{{ match.competition }}</span>
+  </div>
+  
+  <div class="teams">
+    <div class="team">
+      <span class="team-name">{{ match.team1 }}</span>
+    </div>
+    <div class="vs">VS</div>
+    <div class="team">
+      <span class="team-name">{{ match.team2 }}</span>
+    </div>
+  </div>
+
+  <div class="odds">
+    <button 
+      class="odd-btn home" 
+      [class.selected]="isSelected('home')"
+      (click)="selectOdd('home', match.homeOdd)">
+      {{ match.homeOdd | number:'1.2-2' }}
+    </button>
+    <button 
+      class="odd-btn level" 
+      [class.selected]="isSelected('level')"
+      (click)="selectOdd('level', match.levelOdd)">
+      {{ match.levelOdd | number:'1.2-2' }}
+    </button>
+    <button 
+      class="odd-btn away" 
+      [class.selected]="isSelected('away')"
+      (click)="selectOdd('away', match.awayOdd)">
+      {{ match.awayOdd | number:'1.2-2' }}
+    </button>
+  </div>
+</div> 

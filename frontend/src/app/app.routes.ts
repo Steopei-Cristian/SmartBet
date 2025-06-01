@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { BetConfirmationComponent } from './components/bet-confirmation/bet-confirmation.component';
 
 export const routes: Routes = [
   {
@@ -54,7 +55,13 @@ export const routes: Routes = [
         loadComponent: () => import('./components/retrieval/retrieval.component').then(m => m.RetrievalComponent),
         canActivate: [roleGuard],
         data: { role: 'BETTER' }
+      },
+      {
+        path: 'bet-confirmation',
+        loadComponent: () => import('./components/bet-confirmation/bet-confirmation.component').then(m => m.BetConfirmationComponent),
+        canActivate: [roleGuard],
+        data: { role: 'BETTER' }
       }
     ]
-  }
+  },
 ];
