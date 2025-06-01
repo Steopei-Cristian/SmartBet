@@ -1,0 +1,23 @@
+<div class="bet-builder" *ngIf="isVisible$ | async">
+  <div class="bet-builder-header">
+    <h3>Bet Builder</h3>
+    <button class="clear-btn" (click)="clearSelections()">Clear All</button>
+  </div>
+  <div class="selections">
+    <div class="selection" *ngFor="let selection of selections$ | async; let i = index">
+      <button class="remove-btn" (click)="removeSelection(i)">×</button>
+      <div class="selection-details">
+        <span class="match-name">{{ selection.matchName }}</span>
+        <span class="odd-type">{{ selection.oddType | titlecase }}</span>
+        <span class="odd-value">{{ selection.oddValue | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="bet-builder-footer">
+    <div class="total-odd">
+      <span>Total Odd:</span>
+      <span class="value">{{ totalOdd$ | async | number:'1.2-2' }}</span>
+    </div>
+    <button class="place-bet-btn" (click)="placeBet()">Place Bet</button>
+  </div>
+</div> 

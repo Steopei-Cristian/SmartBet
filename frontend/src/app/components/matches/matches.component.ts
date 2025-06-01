@@ -3,13 +3,14 @@ import { MatchService } from '../../services/match.service';
 import { Match } from '../../models/match.model';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { GameCardComponent } from '../game-card/game-card.component';
 
 @Component({
   selector: 'app-matches',
   templateUrl: './matches.component.html',
   styleUrls: ['./matches.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, GameCardComponent]
 })
 export class MatchesComponent implements OnInit {
   matches: Match[] = [];

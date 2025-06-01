@@ -9,28 +9,10 @@
     {{ error }}
   </div>
 
-  <div *ngIf="!loading && !error" class="matches-grid">
-    <div *ngFor="let match of matches" class="match-card">
-      <div class="competition">{{ match.competition }}</div>
-      <div class="teams">
-        <div class="team">{{ match.team1 }}</div>
-        <div class="vs">VS</div>
-        <div class="team">{{ match.team2 }}</div>
-      </div>
-      <div class="odds">
-        <div class="odd">
-          <span class="label">Home</span>
-          <span class="value">{{ match.homeOdd }}</span>
-        </div>
-        <div class="odd">
-          <span class="label">Draw</span>
-          <span class="value">{{ match.levelOdd }}</span>
-        </div>
-        <div class="odd">
-          <span class="label">Away</span>
-          <span class="value">{{ match.awayOdd }}</span>
-        </div>
-      </div>
-    </div>
+  <div *ngIf="!loading && !error" class="matches-list">
+    <app-game-card 
+      *ngFor="let match of matches" 
+      [match]="match">
+    </app-game-card>
   </div>
 </div> 

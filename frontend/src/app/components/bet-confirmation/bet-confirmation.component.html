@@ -1,0 +1,49 @@
+<div class="bet-confirmation">
+  <h2>Confirm Your Bet</h2>
+  
+  <div class="selections">
+    <div class="selection" *ngFor="let selection of selections$ | async; let i = index">
+      <button class="remove-btn" (click)="removeSelection(i)">×</button>
+      <div class="selection-details">
+        <span class="match-name">{{ selection.matchName }}</span>
+        <span class="odd-type">{{ selection.oddType | titlecase }}</span>
+        <span class="odd-value">{{ selection.oddValue | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bet-details">
+    <div class="total-odd">
+      <span>Total Odd:</span>
+      <span class="value">{{ totalOdd$ | async | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="stake-input">
+      <label for="stake">Stake (€):</label>
+      <input 
+        type="number" 
+        id="stake" 
+        [(ngModel)]="stake" 
+        min="1" 
+        step="1"
+        placeholder="Enter stake"
+      >
+    </div>
+
+    <div class="potential-winnings" *ngIf="stake">
+      <span>Potential Winnings:</span>
+      <span class="value">{{ (totalOdd$ | async)! * stake | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="cancel-btn" (click)="goBack()">Cancel</button>
+    <button 
+      class="place-bet-btn" 
+      [disabled]="!stake || stake < 1"
+      (click)="placeBet()"
+    >
+      Place Bet
+    </button>
+  </div>
+</div> 
