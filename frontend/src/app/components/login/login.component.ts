@@ -33,7 +33,7 @@ export class LoginComponent {
         if (user?.role === 'BETTER') {
           this.router.navigate(['/matches']);
         } else {
-          this.router.navigate(['/users']);
+          this.router.navigate(['/home']);
         }
       },
       error: (error) => {

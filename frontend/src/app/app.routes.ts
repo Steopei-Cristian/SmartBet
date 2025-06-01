@@ -36,6 +36,12 @@ export const routes: Routes = [
         loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent),
         canActivate: [roleGuard],
         data: { role: 'ADMIN' }
+      },
+      {
+        path: 'add-match',
+        loadComponent: () => import('./components/add-match/add-match.component').then(m => m.AddMatchComponent),
+        canActivate: [roleGuard],
+        data: { role: 'ADMIN' }
       }
     ]
   }

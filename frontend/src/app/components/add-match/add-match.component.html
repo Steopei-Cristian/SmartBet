@@ -1,0 +1,100 @@
+<div class="add-match-container">
+  <div class="add-match-box">
+    <h2>Add New Match</h2>
+    <form (ngSubmit)="onSubmit()" #addMatchForm="ngForm">
+      <div class="form-group">
+        <label for="competition">Competition:</label>
+        <select
+          id="competition"
+          name="competition"
+          [(ngModel)]="match.competition"
+          required
+        >
+          <option value="">Select Competition</option>
+          <option *ngFor="let competition of competitions" [value]="competition">
+            {{ competition }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="team1">Home Team:</label>
+        <select
+          id="team1"
+          name="team1"
+          [(ngModel)]="match.team1"
+          required
+        >
+          <option value="">Select Home Team</option>
+          <option *ngFor="let team of teams" [value]="team">
+            {{ team }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="team2">Away Team:</label>
+        <select
+          id="team2"
+          name="team2"
+          [(ngModel)]="match.team2"
+          required
+        >
+          <option value="">Select Away Team</option>
+          <option *ngFor="let team of teams" [value]="team">
+            {{ team }}
+          </option>
+        </select>
+      </div>
+      <div class="odds-section">
+        <h3>Odds</h3>
+        <div class="form-group">
+          <label for="homeOdd">Home Odd:</label>
+          <input
+            type="number"
+            id="homeOdd"
+            name="homeOdd"
+            [(ngModel)]="match.homeOdd"
+            step="0.01"
+            min="1"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="levelOdd">Draw Odd:</label>
+          <input
+            type="number"
+            id="levelOdd"
+            name="levelOdd"
+            [(ngModel)]="match.levelOdd"
+            step="0.01"
+            min="1"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="awayOdd">Away Odd:</label>
+          <input
+            type="number"
+            id="awayOdd"
+            name="awayOdd"
+            [(ngModel)]="match.awayOdd"
+            step="0.01"
+            min="1"
+            required
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="date">Match Date:</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          [(ngModel)]="match.date"
+          required
+        />
+      </div>
+      <button type="submit" [disabled]="loading">Add Match</button>
+    </form>
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </div>
+</div> 
