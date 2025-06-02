@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Logout Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor User
+                participant HC as HeaderComponent
+                participant AS as AuthService
+                participant BS as BalanceService
+                participant Router
+                participant LC as LoginComponent
+                participant AG as AuthGuard
+                participant JWT as JwtAuthFilter
+
+                Note over User,AG: Logout Process
+                User->>HC: Click logout button
+                HC->>AS: logout()
+                AS->>AS: Check if browser environment
+                alt Browser Environment
+                    AS->>AS: Remove token from localStorage
+                end
+                AS->>AS: Set currentUser to null
+                AS-->>HC: Logout complete
+                HC->>Router: Navigate to /login
+
+                Note over User,AG: Authentication State
+                Router->>LC: Load login component
+                LC->>AS: Check authentication
+                AS-->>LC: User not authenticated
+
+                Note over User,AG: Protected Route Access
+                User->>Router: Attempt to access protected route
+                Router->>AG: Check canActivate
+                AG->>AS: isAuthenticated()
+                AS-->>AG: Return false
+                AG->>Router: Navigate to /login
+
+                Note over User,AG: API Request Handling
+                User->>JWT: Make API request
+                JWT->>JWT: Check Authorization header
+                alt No token or invalid token
+                    JWT->>JWT: Skip authentication
+                end
+                JWT-->>User: Continue request processing
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                showSequenceNumbers: true
+            }
+        });
+    </script>
+</body>
+</html> 

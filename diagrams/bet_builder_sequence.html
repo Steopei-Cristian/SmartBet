@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bet Builder Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bet Builder Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor User
+                participant GC as GameCard
+                participant BB as BetBuilderComponent
+                participant BBS as BetBuilderService
+                participant BC as BetConfirmationComponent
+                participant BS as BalanceService
+                participant BCtrl as BetController
+                participant BSvc as BetService
+                participant DB as Database
+
+                Note over User,DB: Selection Process
+                User->>GC: Click on odd
+                GC->>GC: Check if odd already selected
+                alt Odd already selected
+                    GC->>GC: Set selectedOdd to null
+                    GC->>BBS: removeSelectionByMatchId(matchId)
+                else New selection
+                    GC->>GC: Set selectedOdd to type
+                    GC->>GC: Format matchName
+                    GC->>BBS: addSelection({matchId, matchName, oddType, oddValue})
+                    BBS->>BBS: Get current selections
+                    BBS->>BBS: Check for existing match
+                    alt Match exists
+                        BBS->>BBS: Update existing selection
+                    else New match
+                        BBS->>BBS: Add new selection
+                    end
+                    BBS->>BBS: Update selections state
+                    BBS->>BB: Show bet builder
+                    BB->>BB: Calculate total odd
+                end
+
+                Note over User,DB: Remove Odd Process
+                alt Remove from GameCard
+                    User->>GC: Click selected odd
+                    GC->>BBS: removeSelectionByMatchId(matchId)
+                    BBS->>BBS: Update selections
+                    BBS->>BB: Update UI
+                    BB->>BB: Recalculate total odd
+                else Remove from BetBuilder
+                    User->>BB: Click remove button
+                    BB->>BBS: removeSelection(index)
+                    BBS->>BBS: Update selections
+                    BBS->>BB: Update UI
+                    BB->>BB: Recalculate total odd
+                else Remove from Confirmation
+                    User->>BC: Click remove button
+                    BC->>BBS: removeSelection(index)
+                    BBS->>BBS: Update selections
+                    BBS->>BC: Update UI
+                    BC->>BC: Recalculate total odd
+                end
+
+                Note over User,DB: Bet Placement
+                User->>BB: Click "Place Bet"
+                BB->>BBS: hide()
+                BB->>BC: Navigate to confirmation
+
+                Note over User,DB: Bet Confirmation
+                User->>BC: Enter stake amount
+                BC->>BC: Validate stake > 0
+                BC->>BS: Check balance
+                BS-->>BC: Return balance
+                alt Sufficient Balance
+                    BC->>BBS: placeBet(stake)
+                    BBS->>BCtrl: POST /api/bets/place
+                    Note over BBS,BCtrl: Include auth token & bet details
+                    BCtrl->>BSvc: placeBet(request, username)
+                    BSvc->>DB: Find user account
+                    DB-->>BSvc: Return account
+                    BSvc->>BSvc: Check sufficient balance
+                    BSvc->>DB: Update account balance
+                    DB-->>BSvc: Confirm balance update
+                    BSvc->>DB: Create bet builder
+                    DB-->>BSvc: Return bet builder
+                    BSvc->>DB: Create bet selections
+                    DB-->>BSvc: Confirm selections
+                    BSvc-->>BCtrl: Return bet builder
+                    BCtrl-->>BBS: Return bet ID & balance
+                    BBS-->>BC: Return response
+                    BC->>BS: Update balance
+                    BC->>BBS: Show success message
+                    BC->>User: Navigate to matches
+                else Insufficient Balance
+                    BC->>User: Display error message
+                end
+
+                Note over BC: Error handling:<br/>Display error message<br/>Reset loading state
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                showSequenceNumbers: true
+            }
+        });
+    </script>
+</body>
+</html> 

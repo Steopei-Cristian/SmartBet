@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Communication Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Logout Communication Diagram</h1>
+        <div class="mermaid">
+            flowchart LR
+                User((User))
+                HC[HeaderComponent]
+                AS[AuthService]
+                Router
+                LC[LoginComponent]
+                AG[AuthGuard]
+                JWT[JwtAuthFilter]
+
+                User -->|"1.Click logout"| HC
+                HC -->|"2.logout"| AS
+                AS -->|"3.Remove token"| AS
+                AS -->|"4.Set currentUser to null"| AS
+                AS -->|"5.Return success"| HC
+                HC -->|"6.Navigate to /login"| Router
+                Router -->|"7.Load login component"| LC
+                LC -->|"8.Check authentication"| AS
+                AS -->|"9.Return not authenticated"| LC
+                User -->|"10.Attempt protected route"| Router
+                Router -->|"11.Check canActivate"| AG
+                AG -->|"12.Check isAuthenticated"| AS
+                AS -->|"13.Return false"| AG
+                AG -->|"14.Navigate to /login"| Router
+                User -->|"15.Make API request"| JWT
+                JWT -->|"16.Check Authorization"| JWT
+                JWT -->|"17.Skip authentication"| JWT
+                JWT -->|"18.Continue request"| User
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html> 

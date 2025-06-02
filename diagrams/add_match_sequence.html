@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Match Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Match Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor Admin
+                participant AMC as AddMatchComponent
+                participant MS as MatchService
+                participant MC as MatchController
+                participant MSVC as MatchService
+                participant DB as Database
+
+                Note over Admin,DB: Initial Data Loading
+                AMC->>MS: getTeams()
+                MS->>+MC: GET /api/teams
+                MC-->>-MS: Return teams list
+                MS-->>AMC: Update teams dropdown
+
+                AMC->>MS: getCompetitions()
+                MS->>+MC: GET /api/matches/competitions
+                Note over MS,MC: Include auth token
+                MC->>MC: @PreAuthorize("hasRole('ADMIN')")
+                MC-->>-MS: Return competitions list
+                MS-->>AMC: Update competitions dropdown
+
+                Note over Admin,DB: Match Creation
+                Admin->>AMC: Fill match form
+                AMC->>AMC: Validate form data
+                AMC->>MS: addMatch(matchData)
+                MS->>+MC: POST /api/matches/add
+                Note over MS,MC: Include auth token
+                MC->>MC: @PreAuthorize("hasRole('ADMIN')")
+                MC->>+MSVC: addMatchWithOdds(request)
+                MSVC->>+DB: Create match with odds
+                DB-->>-MSVC: Return created match
+                MSVC-->>-MC: Return match data
+                MC-->>-MS: Return success response
+                MS-->>AMC: Handle response
+                AMC->>AMC: Reset form
+                AMC->>Admin: Navigate to home page
+
+                Note over AMC: Error handling:<br/>Display error message<br/>Reset loading state
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                showSequenceNumbers: true
+            }
+        });
+    </script>
+</body>
+</html> 

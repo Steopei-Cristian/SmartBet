@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registration Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor User
+                participant RC as RegisterComponent
+                participant AS as AuthService
+                participant AC as AuthController
+                participant UR as UserRepository
+                participant AR as AccountRepository
+                participant CUS as CustomUserDetailsService
+                participant JWT as JwtService
+                participant DB as Database
+
+                User->>RC: Enter registration details
+                RC->>RC: Validate passwords match
+                RC->>AS: register(username, password)
+                AS->>AC: POST /api/auth/register
+                AC->>UR: existsByUsername(username)
+                UR->>DB: Check username
+                DB-->>UR: Return result
+                alt Username exists
+                    UR-->>AC: Return true
+                    AC-->>AS: Return error response
+                    AS-->>RC: Return error
+                    RC-->>User: Display error message
+                else Username available
+                    UR-->>AC: Return false
+                    AC->>AC: Create new User
+                    AC->>UR: save(user)
+                    UR->>DB: Save user
+                    DB-->>UR: Return saved user
+                    UR-->>AC: Return user
+                    AC->>AR: Create new Account
+                    AC->>AR: save(account)
+                    AR->>DB: Save account
+                    DB-->>AR: Return saved account
+                    AR-->>AC: Return account
+                    AC->>CUS: loadUserByUsername(username)
+                    CUS->>UR: findByUsername(username)
+                    UR->>DB: Get user
+                    DB-->>UR: Return user
+                    UR-->>CUS: Return user
+                    CUS-->>AC: Return UserDetails
+                    AC->>JWT: generateToken(userDetails)
+                    JWT-->>AC: Return token
+                    AC-->>AS: Return token
+                    AS->>AS: Store token in localStorage
+                    AS->>AS: Decode JWT and update current user
+                    AS-->>RC: Return auth response
+                    RC->>RC: Get user role
+                    alt User is BETTER
+                        RC->>User: Redirect to matches page
+                    else User is ADMIN
+                        RC->>User: Redirect to home page
+                    end
+                end
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                showSequenceNumbers: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 

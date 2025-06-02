@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Match Communication Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Match Communication Diagram</h1>
+        <div class="mermaid">
+            flowchart LR
+                Admin((Admin))
+                AMC[AddMatchComponent]
+                MS[MatchService]
+                MC[MatchController]
+                MSvc[MatchService]
+                DB[(Database)]
+
+                Admin -->|"1.Submit form"| AMC
+                AMC -->|"2.addMatch"| MS
+                MS -->|"3.POST /api/matches/add"| MC
+                MC -->|"4.addMatchWithOdds"| MSvc
+                MSvc -->|"5.Save match"| DB
+                DB -->|"6.Return match"| MSvc
+                MSvc -->|"7.Return match"| MC
+                MC -->|"8.Return match"| MS
+                MS -->|"9.Return match"| AMC
+                AMC -->|"10.Show success"| Admin
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Communication Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register Communication Diagram</h1>
+        <div class="mermaid">
+            flowchart LR
+                User((User))
+                RC[RegisterComponent]
+                AS[AuthService]
+                AC[AuthController]
+                UR[UserRepository]
+                AR[AccountRepository]
+                CUS[CustomUserDetailsService]
+                JWT[JwtService]
+                DB[(Database)]
+
+                User -->|"1.Enter registration details"| RC
+                RC -->|"2.Validate passwords"| RC
+                RC -->|"3.register"| AS
+                AS -->|"4.POST /api/auth/register"| AC
+                AC -->|"5.Check username exists"| UR
+                UR -->|"6.Query username"| DB
+                DB -->|"7.Return result"| UR
+                UR -->|"8.Return exists status"| AC
+                AC -->|"9.Create user"| AC
+                AC -->|"10.Save user"| UR
+                UR -->|"11.Store user"| DB
+                DB -->|"12.Return saved user"| UR
+                UR -->|"13.Return user"| AC
+                AC -->|"14.Create account"| AC
+                AC -->|"15.Save account"| AR
+                AR -->|"16.Store account"| DB
+                DB -->|"17.Return saved account"| AR
+                AR -->|"18.Return account"| AC
+                AC -->|"19.Load user details"| CUS
+                CUS -->|"20.Get user"| UR
+                UR -->|"21.Query user"| DB
+                DB -->|"22.Return user"| UR
+                UR -->|"23.Return user"| CUS
+                CUS -->|"24.Return UserDetails"| AC
+                AC -->|"25.Generate token"| JWT
+                JWT -->|"26.Return token"| AC
+                AC -->|"27.Return token"| AS
+                AS -->|"28.Store token"| AS
+                AS -->|"29.Update user state"| AS
+                AS -->|"30.Return response"| RC
+                RC -->|"31.Get user role"| RC
+                RC -->|"32.Redirect based on role"| User
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html> 

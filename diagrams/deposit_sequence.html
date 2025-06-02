@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deposit Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor User
+                participant DC as DepositComponent
+                participant SS as StripeService
+                participant AS as AuthService
+                participant BS as BalanceService
+                participant PC as PaymentController
+                participant PS as PaymentService
+                participant Stripe
+
+                Note over User,Stripe: Initial Setup
+                User->>DC: Navigate to deposit page
+                DC->>SS: createElements()
+                SS->>SS: initializeStripe()
+                SS->>Stripe: loadStripe(publicKey)
+                Stripe-->>SS: Return Stripe instance
+                SS->>Stripe: elements.create('card')
+                Stripe-->>SS: Return card element
+                SS-->>DC: Mount card element
+
+                Note over User,Stripe: Deposit Process
+                User->>DC: Enter amount & card details
+                DC->>DC: Validate amount > 0
+                DC->>SS: createPaymentIntent(amount, 'deposit')
+                SS->>Stripe: createPaymentMethod(card)
+                Stripe-->>SS: Return payment method
+                SS->>SS: Get auth token
+                SS->>+PC: POST /api/payments/create-intent
+                Note over SS,PC: Include auth token & payment details
+                PC->>+PS: createPaymentIntent(request, username)
+                PS->>Stripe: Create payment intent
+                Stripe-->>PS: Return payment intent
+                PS-->>-PC: Return payment intent
+                PC-->>-SS: Return client secret
+                SS->>AS: getCurrentUser()
+                AS-->>SS: Return user data
+                SS->>BS: refreshBalance(username)
+                SS->>User: Navigate to matches page
+
+                Note over DC: Error handling:<br/>Display error message<br/>Reset loading state
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                showSequenceNumbers: true
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor User
+                participant LC as LoginComponent
+                participant AS as AuthService
+                participant JWT as JwtService
+                participant CUS as CustomUserDetailsService
+                participant DB as Database
+
+                User->>LC: Enter credentials
+                LC->>LC: Set loading state
+                LC->>AS: login(username, password)
+                AS->>+AS: POST /auth/login
+                AS->>+JWT: Generate JWT token
+                JWT->>+CUS: loadUserByUsername(username)
+                CUS->>+DB: find user by username
+                DB-->>-CUS: return user
+                CUS-->>-JWT: return UserDetails
+                JWT-->>-AS: return JWT token
+                AS->>AS: Store token in localStorage
+                AS->>AS: Decode JWT and update current user
+                AS-->>-LC: return auth response
+                LC->>LC: Update loading state
+                alt User is BETTER
+                    LC->>User: Redirect to matches page
+                else User is ADMIN
+                    LC->>User: Redirect to home page
+                end
+                Note over LC: Error handling:<br/>Display error message<br/>Reset loading state
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                showSequenceNumbers: true
+            }
+        });
+    </script>
+</body>
+</html> 

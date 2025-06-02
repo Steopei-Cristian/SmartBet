@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bet Builder Communication Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bet Builder Communication Diagram</h1>
+        <div class="mermaid">
+            flowchart LR
+                User((User))
+                BBC[BetBuilderComponent]
+                BBS[BetBuilderService]
+                BC[BetController]
+                BS[BetService]
+                DB[(Database)]
+
+                User -->|"1.Select odd"| BBC
+                BBC -->|"2.addSelection"| BBS
+                BBS -->|"3.Update selections"| BBC
+                BBC -->|"4.Show updated selections"| User
+                User -->|"5.Enter stake"| BBC
+                BBC -->|"6.Calculate total odds"| BBS
+                BBS -->|"7.Return total odds"| BBC
+                BBC -->|"8.Show total odds"| User
+                User -->|"9.Place bet"| BBC
+                BBC -->|"10.Create bet request"| BC
+                BC -->|"11.Check balance"| BS
+                BS -->|"12.Verify sufficient funds"| DB
+                DB -->|"13.Return balance"| BS
+                BS -->|"14.Save bet"| DB
+                DB -->|"15.Return bet"| BS
+                BS -->|"16.Return success"| BC
+                BC -->|"17.Return success"| BBC
+                BBC -->|"18.Show success"| User
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html> 

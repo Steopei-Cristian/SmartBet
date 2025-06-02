@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users Sequence Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View Users Sequence Diagram</h1>
+        <div class="mermaid">
+            sequenceDiagram
+                actor Admin
+                participant UC as UsersComponent
+                participant AS as AuthService
+                participant US as UserService
+                participant UCtrl as UserController
+                participant USVC as UserService
+                participant DB as Database
+
+                Note over Admin,DB: Initial Load
+                Admin->>UC: Navigate to users page
+                UC->>UC: Set loading state
+                UC->>US: getNonAdminUsers()
+                US->>US: Get auth token
+                US->>+UCtrl: GET /api/users/non-admin
+                Note over US,UCtrl: Include auth token
+                UCtrl->>UCtrl: @PreAuthorize("hasRole('ADMIN')")
+                UCtrl->>+USVC: getAllNonAdminUsers()
+                USVC->>+DB: Query non-admin users
+                DB-->>-USVC: Return users list
+                USVC-->>-UCtrl: Return UserResponse list
+                UCtrl-->>-US: Return users data
+                US-->>UC: Update users list
+                UC->>UC: Reset loading state
+                UC->>Admin: Display users table
+
+                Note over UC: Error handling:<br/>Display error message<br/>Reset loading state
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 
