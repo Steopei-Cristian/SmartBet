@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -22,24 +23,22 @@ export class RegisterComponent {
     private router: Router
   ) {}
 
-  onSubmit() {
+  async onSubmit() {
     if (this.password !== this.confirmPassword) {
       this.error = 'Passwords do not match';
       return;
     }
 
-    this.authService.register(this.username, this.password).subscribe({
-      next: () => {
-        const user = this.authService.getCurrentUser();
-        if (user?.role === 'BETTER') {
-          this.router.navigate(['/matches']);
-        } else {
-          this.router.navigate(['/users']);
-        }
-      },
-      error: (err) => {
-        this.error = err.error.message || 'An error occurred during registration';
+    try {
+      const response = await firstValueFrom(await this.authService.register(this.username, this.password));
+      const user = this.authService.getCurrentUser();
+      if (user?.role === 'BETTER') {
+        this.router.navigate(['/matches']);
+      } else {
+        this.router.navigate(['/home']);
       }
-    });
+    } catch (err: any) {
+      this.error = err.error.message || 'An error occurred during registration';
+    }
   }
 } 

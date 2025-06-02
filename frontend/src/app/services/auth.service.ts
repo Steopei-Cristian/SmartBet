@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common';
+import * as bcrypt from 'bcryptjs';
 
 export interface User {
   username: string;
@@ -59,6 +60,7 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<any> {
+    // const hashedPassword = bcrypt.hashSync(password, 10);
     return this.http.post(`${this.apiUrl}/auth/login`, { username, password }, this.httpOptions)
       .pipe(
         tap((response: any) => {
@@ -71,6 +73,7 @@ export class AuthService {
   }
 
   register(username: string, password: string): Observable<any> {
+    // const hashedPassword = bcrypt.hashSync(password, 10);
     return this.http.post(`${this.apiUrl}/auth/register`, { username, password }, this.httpOptions)
       .pipe(
         tap((response: any) => {
