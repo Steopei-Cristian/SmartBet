@@ -10,9 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import smart.bet.dto.LoginRequest;
 import smart.bet.dto.RegisterRequest;
-import smart.bet.model.Role;
-import smart.bet.model.User;
-import smart.bet.repository.UserRepository;
+import smart.bet.model.*;
+import smart.bet.repository.*;
 import smart.bet.security.CustomUserDetailsService;
 import smart.bet.security.JwtService;
 
@@ -29,6 +28,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
 
@@ -46,7 +46,13 @@ public class AuthController {
         user.setRole(request.getRole() != null ? request.getRole() : Role.BETTER);
         user.setCreatedAt(LocalDate.now());
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        // Create account for the new user
+        Account account = new Account();
+        account.setUser(user);
+        account.setBalance(0.0);
+        accountRepository.save(account);
 
         // Generate token for the new user
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
