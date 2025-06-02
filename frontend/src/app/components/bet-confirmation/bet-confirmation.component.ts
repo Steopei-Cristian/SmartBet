@@ -81,6 +81,7 @@ export class BetConfirmationComponent implements OnInit {
           setTimeout(() => {
             this.betBuilderService.clearSelections();
             this.router.navigate(['/matches']);
+            this.betBuilderService.setShowSuccess(false);
           }, 1500);
         },
         error: (error) => {
